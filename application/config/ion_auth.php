@@ -144,6 +144,7 @@ $config['email_templates'] = 'email/';
  | Default: activate.tpl.php
  */
 $config['email_invio_candidatura'] = 'invio_candidatura.tpl.php';
+$config['email_sblocco_candidatura'] = 'sblocco_candidatura.tpl.php';
 /*
  | -------------------------------------------------------------------------
  | Activate Account Email Template

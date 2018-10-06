@@ -441,6 +441,20 @@ class Esperti_sep_model extends CI_Model
         }
         return false;
     }
+    
+    public function leggi_utente_domanda($id)
+    {
+        $this->db->select('id_ins');
+        $this->db->from('esep_domanda');
+        $this->db->where('id_domanda', $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0)
+        {
+            return $query->row_array();
+        }
+        return 0;
+    }
+    
 
     public function salva_domanda($data, $id)
     {

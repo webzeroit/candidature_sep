@@ -76,7 +76,7 @@ class Esperti_sep_ajax extends CI_Controller
             $data = array(
                 'id_stato_domanda_esep' => $this->input->post("id_esito_domanda_esep"),
                 'data_istruttoria' => convertsDataInMySQLFormat($this->input->post("data_istruttoria")),
-                'note' => $this->input->post("note_istruttoria")                
+                'note' => $this->input->post("note_istruttoria")
             );
             $output = $this->esperti_sep->salva_domanda($data, $id_domanda);
             $this->_render_json($output);
@@ -101,6 +101,22 @@ class Esperti_sep_ajax extends CI_Controller
             $this->load->model('esperti_sep_model', 'esperti_sep');
             $id_domanda = $this->input->post("id_domanda");
             $output = $this->esperti_sep->sblocca_domanda($id_domanda);
+            if ($output === TRUE)
+            {
+                $id_utente_ins = $this->esperti_sep->leggi_utente_domanda($this->input->post("id_domanda"));
+                $user = $this->ion_auth->user($id_utente_ins['id_ins'])->row();
+
+                $view_email = $this->config->item('email_templates', 'ion_auth') . $this->config->item('email_sblocco_candidatura', 'ion_auth');
+                $message = $this->load->view($view_email, null, TRUE);
+
+                $this->load->library('email');
+                $this->email->clear();
+                $this->email->from($this->config->item('admin_email', 'ion_auth'), $this->config->item('site_title', 'ion_auth'));
+                $this->email->to($user->email);
+                $this->email->subject($this->config->item('site_title', 'ion_auth') . ' - Sblocco candidatura');
+                $this->email->message($message);
+                $this->email->send();
+            }
             $this->_render_json($output);
         }
     }
